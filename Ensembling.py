@@ -1,6 +1,6 @@
 from data_process import data_clean
 from sklearn.ensemble import (RandomForestClassifier, AdaBoostClassifier
-, GradientBoostingClassifier, ExtraTreesClassifier, VotingClassifier)
+                              , GradientBoostingClassifier, ExtraTreesClassifier, VotingClassifier)
 from sklearn.svm import SVC
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
@@ -173,42 +173,43 @@ def best_xgb_boosting():
     return model
 
 
-full_X, full = data_clean()
+if __name__ == '__main__':
+    full_X, full = data_clean()
 
-sourceRow = 891  # 训练数据集的大小
-# 原始数据集：特征
-source_X = full_X.loc[0:sourceRow - 1, :]
-# 原始数据集：标签
-source_y = full.loc[0:sourceRow - 1, 'Survived']
-# 预测数据集：特征
-pred_X = full_X.loc[sourceRow:, :]
+    sourceRow = 891  # 训练数据集的大小
+    # 原始数据集：特征
+    source_X = full_X.loc[0:sourceRow - 1, :]
+    # 原始数据集：标签
+    source_y = full.loc[0:sourceRow - 1, 'Survived']
+    # 预测数据集：特征
+    pred_X = full_X.loc[sourceRow:, :]
 
-kfold = StratifiedKFold(n_splits=10)
+    kfold = StratifiedKFold(n_splits=10)
 
-SVMC_best = best_svm()            #best 函数是在当前最好参数下生成的
-ada_best = best_ada()
-ExtC_best = best_extra_trees()
-RFC_best = best_random_forest()
-GBC_best = best_gradient_boosting()
+    SVMC_best = best_svm()            # best 函数是在当前最好参数下生成的
+    ada_best = best_ada()
+    ExtC_best = best_extra_trees()
+    RFC_best = best_random_forest()
+    GBC_best = best_gradient_boosting()
 
-# SVMC_best = train_svm(kfold, source_X, source_y)
-# ada_best = train_ada(kfold, source_X, source_y)
-# ExtC_best = train_extra_trees(kfold, source_X, source_y)
-# RFC_best = train_random_forest(kfold, source_X, source_y)
-# GBC_best = train_gradient_boosting(kfold, source_X, source_y)
-# XGB_best = best_xgb_boosting(kfold, source_X, source_y)
+    # SVMC_best = train_svm(kfold, source_X, source_y)
+    # ada_best = train_ada(kfold, source_X, source_y)
+    # ExtC_best = train_extra_trees(kfold, source_X, source_y)
+    # RFC_best = train_random_forest(kfold, source_X, source_y)
+    # GBC_best = train_gradient_boosting(kfold, source_X, source_y)
+    # XGB_best = best_xgb_boosting(kfold, source_X, source_y)
 
-print('Training is complete')
+    print('Training is complete')
 
-votingC = VotingClassifier(estimators=[('rfc', RFC_best), ('extc', ExtC_best),
-                                       ('svc', SVMC_best), ('gbc', GBC_best), ('ada', ada_best)], voting='soft')
+    votingC = VotingClassifier(estimators=[('rfc', RFC_best), ('extc', ExtC_best),
+                                           ('svc', SVMC_best), ('gbc', GBC_best), ('ada', ada_best)], voting='soft')
 
-votingC.fit(source_X, source_y)
+    votingC.fit(source_X, source_y)
 
-pred_Y = votingC.predict(pred_X)
-pred_Y = pred_Y.astype(int)
+    pred_Y = votingC.predict(pred_X)
+    pred_Y = pred_Y.astype(int)
 
-passenger_id = full.loc[sourceRow:, 'PassengerId']
+    passenger_id = full.loc[sourceRow:, 'PassengerId']
 
-predDf = pd.DataFrame({'PassengerId': passenger_id, 'Survived': pred_Y})
-predDf.to_csv('49-Titanic_pred(best params func mean age).csv', index=False)
+    predDf = pd.DataFrame({'PassengerId': passenger_id, 'Survived': pred_Y})
+    predDf.to_csv('49-Titanic_pred(best params func mean age).csv', index=False)

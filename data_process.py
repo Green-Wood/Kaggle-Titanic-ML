@@ -78,7 +78,7 @@ def getTitle(name):       # 从姓名中提取头衔
     return str3
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     train = pd.read_csv("./train.csv")  # train data
     test = pd.read_csv("./test.csv")  # test data
 
