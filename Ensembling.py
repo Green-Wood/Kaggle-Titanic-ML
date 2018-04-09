@@ -185,11 +185,11 @@ pred_X = full_X.loc[sourceRow:, :]
 
 kfold = StratifiedKFold(n_splits=10)
 
-# SVMC_best = best_svm()            #best 函数是在当前最好参数下生成的
-# ada_best = best_ada()
-# ExtC_best = best_extra_trees()
-# RFC_best = best_random_forest()
-# GBC_best = best_gradient_boosting()
+SVMC_best = best_svm()            #best 函数是在当前最好参数下生成的
+ada_best = best_ada()
+ExtC_best = best_extra_trees()
+RFC_best = best_random_forest()
+GBC_best = best_gradient_boosting()
 
 # SVMC_best = train_svm(kfold, source_X, source_y)
 # ada_best = train_ada(kfold, source_X, source_y)
